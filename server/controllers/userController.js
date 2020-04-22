@@ -1,4 +1,4 @@
-const db = require('../models/parkModels.js');
+const db = require('../models/database.js');
 
 const userController = {};
 
