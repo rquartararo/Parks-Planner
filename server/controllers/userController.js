@@ -1,41 +1,32 @@
 const db = require('../models/database.js');
+const bcrypt = require('bcrypt');
+
+const SALT_ROUNDS = 10;
 
 const userController = {};
 
-// POST /signup to Sign Up User
-userController.signUp = (req, res, next) => {
-  const signupQuery = `
+/* ------------------------------ Sign Up User ------------------------------ */
+userController.signUp = async (req, res, next) => {
+  let { username, password } = req.body;
+
+  password = await bcrypt.hash(password, SALT_ROUNDS)
+  .catch((err) => next({
+    log: 'ERROR in Bycrpt userController.signup',
+    msg: err
+  }))
+
+  const user = [username, password];
+  const query = `
     INSERT INTO users (username, password)
-    VALUES($1, $2);`
+    VALUES($1, $2);`;
 
-    const username = req.body[0]
-    const password = req.body[1]
-    const user = [username, password];
-
-    if (!username || !password) return next("null fields submitted");
-    
-    db.query(signupQuery, user)
-      .then(userData => {
-        res.locals.user = user;
-        next();
-      })
-      .catch(err=>(next("error in signup middleware, bro")))
-}
-
-userController.verifySignUpUser = (req, res, next) =>{
-  const checkUser = 
-  `SELECT * FROM users WHERE username = $1`
-  
-  const username = req.body[0]
-  const user = [username]; 
-
-  db.query(checkUser, user)
-    .then(userSignUp => {
-      if (userSignUp.rows.length === 0) return next();
-      if (userSignUp.rows.length > 0) return res.status(400).json("verifySignUp did not find existing username already")
-    })
-    .catch(err=> next("error in verifySignUpUser, dude"))
-}
+  db.query(query, user)
+    .then(() =>  next())
+    .catch((err) => next({
+      log: 'ERROR in userController.signup',
+      msg: err
+    }));
+};
 
 userController.verifyLoginUser = (req, res, next) =>{
   const checkUser = 
