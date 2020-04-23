@@ -17,4 +17,17 @@ utils.dataFormatter = (data) => {
   return favorites;
 }
 
+utils.parkDataFormatter = (data) => {
+  const parkData = [];
+  data.forEach(obj => {
+    const formattedObj = {};
+    formattedObj.fullName = obj.fullName;
+    formattedObj.parkCode = obj.parkCode;
+    formattedObj.latitude = obj.latitude;
+    formattedObj.longitude = obj.longitude;
+    parkData.push(formattedObj)
+  })
+  return parkData
+}
+
 module.exports = utils;
