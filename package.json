@@ -4,9 +4,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server/server.js",
+    "start": "NODE_ENV=production nodemon server/server.js",
     "build": "webpack",
-    "dev": "NODE_ENV=development nodemon server/server.js & webpack-dev-server --open"
+    "dev": "NODE_ENV=development nodemon server/server.js & webpack-dev-server"
   },
   "repository": {
     "type": "git",
