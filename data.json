@@ -99,8 +99,8 @@
 // Server Response
 [
   {
-      "name": "String",
-      "code": "String",
+      "fullName": "String",
+      "parkCode": "String",
       "latitude": "Number",
       "longitude": "Number"
   }

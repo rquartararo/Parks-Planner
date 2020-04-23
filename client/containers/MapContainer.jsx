@@ -7,8 +7,10 @@ import { connect } from 'react-redux';
 // The <Marker /> component accepts a position prop that defines the location for the position on the map. 
 // It can be either a raw object or a google.maps.LatLng() instance.
 const mapStyles = {
-  width: '100%',
-  height: '70%'
+  width: '200%',
+  height: '55%',
+  //opacity: '.5',
+  borderRadius: '10px'
 }
 const mapStateToProps = state => ({
   parksList: state.park.parksList,
@@ -83,6 +85,7 @@ class MapContainer extends Component {
               lng: -95.7129
             }}
             zoom={4}
+            className = 'map'
           >
             {markersArray}
           </Map >

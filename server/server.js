@@ -10,7 +10,7 @@ const PORT = 3000;
 /* --------------------------------- Parsers -------------------------------- */
 app.use(express.json());
 
-/* -------------------------- Server Static Assets -------------------------- */
+/* -------------------------- Serve Static Assets --------------------------- */
 app.get('/build', (req, res) => {
   res.status(200).sendFile(path.resolve(__dirname, '../build/bundle.js'))
 });
