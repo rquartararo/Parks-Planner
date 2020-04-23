@@ -12,7 +12,7 @@ import MapContainer from './mapContainer.jsx';
 // } from "react-router-dom";
 
 // (Optional) import stylesheet here.
-import '../stylesheets/styles.scss';
+// import '../stylesheets/styles.scss';
 
 const mapStateToProps = state => ({
     loggedInUser: state.park.loggedInUser,
@@ -25,10 +25,20 @@ class landingPage extends React.Component {
     }
     render() {
     return (
-        <div id='main'>
-          <h1>🌲  Parks Planner  🌲</h1>
-                <MapContainer/>
+        // <div id='main'>
+        //   <h1>🌲  Parks Planner  🌲</h1>
+        //         <MapContainer/>
+        // </div>
+      <section className="landing">
+        <div className="dark-overlay">
+          <div className="landing-inner">
+            <h1 className="x-large">Get Out There.</h1>
+            <p className="lead">
+            Use the map below to begin your next adventure
+          </p>
+          </div>
         </div>
+      </section>
     )
   
 }
