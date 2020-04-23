@@ -1,9 +1,10 @@
 import React from 'react';
-//import Connected from './containers/mapContainer.jsx';
+//mport Connected from './containers/mapContainer.jsx';
 import MapContainer from './mapContainer.jsx';
-// import Park from './components/park.jsx';
+import Park from '../components/park.jsx';
 // import Login from './components/login.jsx';
  import { connect } from 'react-redux';
+import mapContainer from './mapContainer.jsx';
 // import {
 //   BrowserRouter as Router,
 //   Switch,
@@ -30,12 +31,17 @@ class landingPage extends React.Component {
         //         <MapContainer/>
         // </div>
       <section className="landing">
-        <div className="dark-overlay">
+        < div className="dark-overlay">
           <div className="landing-inner">
             <h1 className="x-large">Get Out There.</h1>
             <p className="lead">
             Use the map below to begin your next adventure
+          <MapContainer/>
           </p>
+          
+          </div>
+          <div>
+          < Park/>
           </div>
         </div>
       </section>
