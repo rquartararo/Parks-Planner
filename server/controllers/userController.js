@@ -60,6 +60,26 @@ userController.login = (req, res, next) => {
     );
 };
 
+/* ---------------------------- Update Favorites ---------------------------- */
+userController.updateFavorites = (req, res, next) => {
+  const { _id, username, parkCode } = req.body;
+
+  const user = [_id, parkCode];
+  const query = `INSERT INTO favorites (user_id, park_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`;
+
+  db.query(query, user)
+    .then(() => {
+      res.locals.user = {_id: _id, username: username}
+      next()
+    })
+    .catch((err) =>
+      next({
+        log: 'ERROR in userController.updateFavorites',
+        msg: err.detail,
+      })
+    );
+};
+
 /* --------------------------- Populate User Data --------------------------- */
 userController.getData = (req, res, next) => {
   const { _id } = res.locals.user;
@@ -74,26 +94,6 @@ userController.getData = (req, res, next) => {
     res.locals.user = userData
     next()
   })
-};
-
-/* ---------------------------- Update Favorites ---------------------------- */
-userController.updateFavorites = (req, res, next) => {
-  const { _id, username, parkCode } = req.body;
-
-  const user = [_id, parkCode];
-  const query = `INSERT INTO favorites (user_id, park_id) VALUES ($1, $2)`;
-
-  db.query(query, user)
-    .then(() => {
-      res.locals.user = {_id: _id, username: username}
-      next()
-    })
-    .catch((err) =>
-      next({
-        log: 'ERROR in userController.updateFavorites',
-        msg: err.detail,
-      })
-    );
 };
 
 module.exports = userController;
