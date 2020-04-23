@@ -1,5 +1,6 @@
 const db = require('../models/database.js');
 const bcrypt = require('bcrypt');
+const utils = require('../utils/utils.js')
 
 const SALT_ROUNDS = 10;
 
@@ -63,17 +64,30 @@ userController.login = (req, res, next) => {
 userController.getData = (req, res, next) => {
   const { _id } = res.locals.user;
   
+  const user = [_id]
+  const query = `SELECT * FROM parks p JOIN favorites f ON p."parkCode" = f.park_id WHERE user_id = $1`
+
+  db.query(query, user)
+  .then(user => {
+    // combine _id & username with the favorites data
+    const userData = Object.assign(res.locals.user,{ favorites: utils.dataFormatter(user.rows)})
+    res.locals.user = userData
+    next()
+  })
 };
 
 /* ---------------------------- Update Favorites ---------------------------- */
 userController.updateFavorites = (req, res, next) => {
-  const { _id, parkCode } = req.body;
+  const { _id, username, parkCode } = req.body;
 
   const user = [_id, parkCode];
   const query = `INSERT INTO favorites (user_id, park_id) VALUES ($1, $2)`;
 
   db.query(query, user)
-    .then(() => next())
+    .then(() => {
+      res.locals.user = {_id: _id, username: username}
+      next()
+    })
     .catch((err) =>
       next({
         log: 'ERROR in userController.updateFavorites',
