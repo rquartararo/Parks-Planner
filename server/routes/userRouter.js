@@ -6,8 +6,12 @@ router.post('/signup', userController.signUp, (req, res) => {
   res.status(200).json(res.locals.user)
 });
 
-router.get('/login', userController.verifyLoginUser, (req, res) =>
-  res.status(200).json(res.locals.foundUser)
+router.post('/login', userController.login, (req, res) =>
+res.status(200).json(res.locals.user)
 );
+
+router.post('/favorite', userController.updateFavorites, (req, res) => {
+  res.status(200).json('success')
+} )
 
 module.exports = router;
