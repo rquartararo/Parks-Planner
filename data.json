@@ -1,0 +1,131 @@
+/* --------------------------------- Sign Up -------------------------------- */
+
+// Client Request
+// URL: /user/signup
+// METHOD: POST
+// HEADER: JSON
+// BODY: 
+
+{
+  "username" : "String",
+  "password" : "String"
+}
+
+
+// Server Response
+{
+  "_id": "String",
+  "username": "String",
+  "favorites": [];
+}
+
+
+/* ---------------------------------- Login --------------------------------- */
+
+// Client Request
+// URL: /user/login
+// METHOD: POST
+// HEADER: JSON
+// BODY: 
+
+{
+  "username" : "String",
+  "password" : "String"
+}
+
+
+// Server Response
+{
+  "_id": "String",
+  "username": "String",
+  "favorites": [
+    {
+      "parkCode": "String",
+      "fullName": "String",
+      "images": [{
+        "credit": "String",
+        "altText": "String",
+        "title": "String",
+        "caption": "String",
+        "url": "String"
+      }],
+      "latitude": "Number",
+      "longitude": "Number",
+      "weatherInfo": "String"
+    }
+  ]
+}
+
+/* ----------------------------- Save Favorites ----------------------------- */
+
+// Client Request
+// URL: /user/favorite
+// METHOD: POST
+// HEADER: JSON
+// BODY: 
+
+{
+  "_id" : "String",
+  "parkCode" : "String"
+}
+
+// Server Response
+{
+  "favorites": [
+    {
+      "parkCode": "String",
+      "fullName": "String",
+      "images": [{
+        "credit": "String",
+        "altText": "String",
+        "title": "String",
+        "caption": "String",
+        "url": "String"
+      }],
+      "latitude": "Number",
+      "longitude": "Number",
+      "weatherInfo": "String"
+    }
+  ]
+}
+
+/* ------------------------------ Get All Parks ----------------------------- */
+
+// Client Request
+// URL: /api/getparks
+// METHOD: GET
+
+
+// Server Response
+[
+  {
+      "name": "String",
+      "code": "String",
+      "latitude": "Number",
+      "longitude": "Number"
+  }
+]
+
+/* ------------------------------ Get One Park ------------------------------ */
+
+// Client Request
+// URL: /api/getparks/:code
+// METHOD: GET
+
+
+// Server Response
+  {
+      "fullName": "String",
+      "description":  "String",
+      "weatherInfo":  "String",
+      "images":  [{
+          "credit": "String",
+          "altText": "String",
+          "title": "String",
+          "caption": "String",
+          "url": "String",
+        }],
+      "activities":  [
+        { "name": "Biking" }
+      ]
+  }
