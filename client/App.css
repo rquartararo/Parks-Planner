@@ -231,8 +231,8 @@ img {
 }
 
 /* Overlay */
+/* background-color: rgba(0, 0, 0, 0.7); */
 .dark-overlay {
-  /* background-color: rgba(0, 0, 0, 0.7); */
   background-color:#F7F9FB;
   position: absolute;
   top: 0;
@@ -357,6 +357,49 @@ button {
   text-align: center;
 }
 
+.mapContainer{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color:#F7F9FB;
+
+}
+ .map{ /*size styling of the map are in the component*/
+  opacity: .5;
+  border-radius: 10px;
+} 
+.map:hover{
+  opacity:1.0;
+}
+.park{
+  display: grid;
+  align-items: center;
+  background-color:#F7F9FB; 
+  color: #00887A;
+  grid-template-columns: repeat(3,300px);
+  grid-template-rows: auto;
+  grid-template-areas: 
+    "head head head head"
+    "weather weather description description"
+    "pic pic pic pic"
+    "pic pic pic pic";
+}
+.head{
+  grid-area: head; 
+}
+.description{
+  grid-area: description; 
+}
+.weather{
+  grid-area: weather; 
+}
+.pic{
+  grid-area: pic; 
+}
+.icon{
+  margin-left:20px;
+}
 /* Profiles Page */
 .profile {
   display: grid;
