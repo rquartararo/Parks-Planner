@@ -10,14 +10,15 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
+    publicPath: '/'
   },
   devServer: {
+    historyApiFallback: true,
     publicPath: '/build/',
-    // contentBase: path.resolve(__dirname, 'build'),
+    open: false,
     proxy: {
-      '/login': 'http://localhost:3000',
-      '/getparks': 'http://localhost:3000',
-      '/signup': 'http://localhost:3000',
+      '/user': 'http://localhost:3000',
+      '/api': 'http://localhost:3000',
     },
   },
   module: {

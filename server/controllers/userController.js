@@ -1,63 +1,99 @@
-const db = require('../models/parkModels.js');
+const db = require('../models/database.js');
+const bcrypt = require('bcrypt');
+const utils = require('../utils/utils.js')
+
+const SALT_ROUNDS = 10;
 
 const userController = {};
 
-// POST /signup to Sign Up User
-userController.signUp = (req, res, next) => {
-  const signupQuery = `
-    INSERT INTO users (username, password)
-    VALUES($1, $2);`
+/* ------------------------------ Sign Up User ------------------------------ */
+userController.signUp = async (req, res, next) => {
+  let { username, password } = req.body;
 
-    const username = req.body[0]
-    const password = req.body[1]
-    const user = [username, password];
+  // Encrypt password before storing it in the DB
+  password = await bcrypt.hash(password, SALT_ROUNDS).catch((err) =>
+    next({
+      log: 'ERROR in Bycrpt userController.signup',
+      msg: err,
+    })
+  );
 
-    if (!username || !password) return next("null fields submitted");
-    
-    db.query(signupQuery, user)
-      .then(userData => {
-        res.locals.user = user;
-        next();
+  // Cleansing client input to guard against SQL Injection
+  const user = [username, password];
+  const query = `INSERT INTO users (username, password) VALUES($1, $2);`;
+
+  // Executing query and adding user to the DB
+  db.query(query, user)
+    .then(() => next())
+    .catch((err) =>
+      next({
+        log: 'ERROR in userController.signup',
+        msg: err.detail,
       })
-      .catch(err=>(next("error in signup middleware, bro")))
-}
+    );
+};
 
-userController.verifySignUpUser = (req, res, next) =>{
-  const checkUser = 
-  `SELECT * FROM users WHERE username = $1`
-  
-  const username = req.body[0]
-  const user = [username]; 
+/* ------------------------------- Login User ------------------------------- */
+userController.login = (req, res, next) => {
+  let { username, password } = req.body;
 
-  db.query(checkUser, user)
-    .then(userSignUp => {
-      if (userSignUp.rows.length === 0) return next();
-      if (userSignUp.rows.length > 0) return res.status(400).json("verifySignUp did not find existing username already")
-    })
-    .catch(err=> next("error in verifySignUpUser, dude"))
-}
+  const user = [username];
+  const query = `SELECT * FROM users WHERE username = $1;`;
 
-userController.verifyLoginUser = (req, res, next) =>{
-  const checkUser = 
-  `SELECT * FROM users WHERE username = $1 and password = $2`
-  
-  const username = req.query.info[0]
-  const password = req.query.info[1]
-  const user = [username, password]
-
-
-  db.query(checkUser, user)
-    .then(userData => {
-      if (userData.rows.length !== 0) {
-        let foundData = userData.rows[0]
-        res.locals.foundUser = foundData;
+  db.query(query, user)
+    .then(async (user) => {
+      const hash = user.rows[0].password;
+      const result = await bcrypt.compare(password, hash);
+      if (result) {
+        const { _id, username } = user.rows[0];
+        res.locals.user = { _id: _id, username: username };
         next();
-      } else { 
-        return res.status(400).json("verifyLoginUser did not find existing username, dude")
       }
+      // if authenticaiton fails, send back 401 status
+      if (!result) res.status(401).send('Authentication failed');
     })
-    .catch((err)=> next("error in verifyLoginUser, dude"))
-}
+    .catch((err) =>
+      next({
+        log: 'ERROR in userController.login',
+        msg: err.detail,
+      })
+    );
+};
 
+/* ---------------------------- Update Favorites ---------------------------- */
+userController.updateFavorites = (req, res, next) => {
+  const { _id, username, parkCode } = req.body;
+
+  const user = [_id, parkCode];
+  const query = `INSERT INTO favorites (user_id, park_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`;
+
+  db.query(query, user)
+    .then(() => {
+      res.locals.user = {_id: _id, username: username}
+      next()
+    })
+    .catch((err) =>
+      next({
+        log: 'ERROR in userController.updateFavorites',
+        msg: err.detail,
+      })
+    );
+};
+
+/* --------------------------- Populate User Data --------------------------- */
+userController.getData = (req, res, next) => {
+  const { _id } = res.locals.user;
+  
+  const user = [_id]
+  const query = `SELECT * FROM parks p JOIN favorites f ON p."parkCode" = f.park_id WHERE user_id = $1`
+
+  db.query(query, user)
+  .then(user => {
+    // combine _id & username with the favorites data
+    const userData = Object.assign(res.locals.user,{ favorites: utils.dataFormatter(user.rows)})
+    res.locals.user = userData
+    next()
+  })
+};
 
 module.exports = userController;
